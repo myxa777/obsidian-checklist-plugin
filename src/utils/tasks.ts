@@ -68,9 +68,23 @@ export const parseTodos = async (
         if (todoTags.length === 1 && todoTags[0] === '*') return true
         const fileCache = cache.getFileCache(file)
         const allTags = getAllTagsFromMetadata(fileCache)
+
+// here
+
+        const minusTodoTags = todoTags.filter(mag =>
+          mag.charAt(0) == "-",
+        ).map(s => s.slice(1));
+
+        const minusTagsOnPage = allTags.filter(tag =>
+          minusTodoTags.includes(retrieveTag(getTagMeta(tag)).toLowerCase()),
+        )
+
+        if (minusTagsOnPage.length <> 0) return false
+
         const tagsOnPage = allTags.filter(tag =>
           todoTags.includes(retrieveTag(getTagMeta(tag)).toLowerCase()),
         )
+
         return tagsOnPage.length > 0
       })
       .map<Promise<FileInfo>>(async file => {
